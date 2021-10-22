@@ -67,6 +67,24 @@ class FileJson:
 
 		self.create(self.temp)
 
+	def addDex (self, dict_datas, item = False, ifArray = True):
+		def add_dex (func):
+			def dex ():
+				read_datas = self.if_read()
+
+				for key, value in read_datas.items():
+					self.temp[key] = value
+
+				if ifArray == True:
+					for dict_data in dict_datas:
+						self.__intdict_data(item, dict_data)
+				elif ifArray == False:
+					self.__intdict_data(item, dict_datas)
+
+				func(self.temp, self.create)
+			return dex
+		return add_dex
+
 	def delete (self, keys, item = False, ifArray = True):
 		read_datas = self.if_read()
 		for key, value in read_datas.items():
@@ -89,33 +107,39 @@ class FileJson:
 		
 
 
+if __name__ == '__main__':
+	FJ = FileJson("data")
+	FJ.temp = {
+		"data": {},
+		"outdata": {} 
+	}
 
 
+	data = [
+		{
+			"09.09.2021": {
+				"text": "Hello!",
+				"image": False
+			}
+		},
+		{
+			"10.09.2021": {
+				"text": "Hello1!",
+				"image": False
+			}
+		}
+	]
 
-# FJ = FileJson("data")
-# FJ.temp = {
-# 	"data": {},
-# 	"outdata": {} 
-# }
+	@FJ.addDex(data, 'data')
+	def create (temp, creates):
+		print(temp)
+		creates(temp)
 
-# data = [
-# 	{
-# 		"09.09.2021": {
-# 			"text": "Hello!",
-# 			"image": False
-# 		}
-# 	},
-# 	{
-# 		"10.09.2021": {
-# 			"text": "Hello1!",
-# 			"image": False
-# 		}
-# 	}
-# ]
+	create()
 
-# FJ.add(data, 'data')
+	# FJ.add(data, 'data')
 
-# #FJ.delete(["data", "outdata"])
+	# FJ.delete(["data", "outdata"])
 
-# # FJ.relocate('outdata', 'data', ["10.09.2021", "09.09.2021"])
-# print(FJ.temp )
+	# FJ.relocate('outdata', 'data', ["10.09.2021", "09.09.2021"])
+	# print(FJ.temp )
