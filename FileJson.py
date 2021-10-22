@@ -24,12 +24,18 @@ class FileJson:
 			data = json.load(read_file)
 		return data
 
-	def if_read (self):
+	def if_read (self, create = True):
 		try:
 			read_data = self.read()
 		except:
-			self.create(self.temp);
-			read_data = self.read()
+			if create == True:
+				self.create(self.temp);
+				read_data = self.read()
+			else:
+				try:
+					read_data = self.read()
+				except:
+					read_data = self.temp
 
 		return read_data
 
@@ -53,8 +59,8 @@ class FileJson:
 			else:
 				self.temp[key] = value
 
-	def add (self, dict_datas, item = False, ifArray = True):
-		read_datas = self.if_read()
+	def add (self, dict_datas, item = False, ifArray = True, create=True):
+		read_datas = self.if_read(create)
 
 		for key, value in read_datas.items():
 			self.temp[key] = value
@@ -65,28 +71,19 @@ class FileJson:
 		elif ifArray == False:
 			self.__intdict_data(item, dict_datas)
 
-		self.create(self.temp)
+		if create == True:
+			self.create(self.temp)
 
-	def addDex (self, dict_datas, item = False, ifArray = True):
+	def addDex (self, dict_datas, item = False, ifArray = True, create=True):
 		def add_dex (func):
 			def dex ():
-				read_datas = self.if_read()
-
-				for key, value in read_datas.items():
-					self.temp[key] = value
-
-				if ifArray == True:
-					for dict_data in dict_datas:
-						self.__intdict_data(item, dict_data)
-				elif ifArray == False:
-					self.__intdict_data(item, dict_datas)
-
-				func(self.temp, self.create)
+				self.add(dict_datas=dict_datas, item = item, ifArray = ifArray, create=create)
+				func(self.temp)
 			return dex
 		return add_dex
 
-	def delete (self, keys, item = False, ifArray = True):
-		read_datas = self.if_read()
+	def delete (self, keys, item = False, ifArray = True, create = True):
+		read_datas = self.if_read(create)
 		for key, value in read_datas.items():
 			self.temp[key] = value
 
@@ -102,7 +99,8 @@ class FileJson:
 			else:
 				self.temp[item].pop(keys, 'ERROR')
 
-		self.create(self.temp)
+		if create == True:
+			self.create(self.temp)
 
 		
 
@@ -130,12 +128,11 @@ if __name__ == '__main__':
 		}
 	]
 
-	@FJ.addDex(data, 'data')
-	def create (temp, creates):
+	@FJ.addDex(data, create=False)
+	def creates (temp):
 		print(temp)
-		creates(temp)
 
-	create()
+	creates()
 
 	# FJ.add(data, 'data')
 
