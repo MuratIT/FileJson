@@ -1,4 +1,4 @@
-from FileJson import FileJson
+from .FileJson import FileJson
 
 if __name__ == '__main__':
 	FJ = FileJson("data")
