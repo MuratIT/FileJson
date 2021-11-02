@@ -128,7 +128,7 @@ if __name__ == '__main__':
 		}
 	]
 
-	@FJ.addDex(data, create=False)
+	@FJ.addDex(data)
 	def creates (temp):
 		print(temp)
 
